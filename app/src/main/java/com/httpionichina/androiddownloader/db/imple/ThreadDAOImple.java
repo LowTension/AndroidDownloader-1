@@ -24,7 +24,6 @@ public class ThreadDAOImple implements ThreadDAO {
         mDbHelper = new DBHelper(context);
     }
 
-
     @Override
     public void insertThread(ThreadInfo threadInfo) {
         //获取SQLite数据库写入的对象
@@ -45,10 +44,13 @@ public class ThreadDAOImple implements ThreadDAO {
 
     @Override
     public void updateThread(String url, int thread_id, int finished) {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String sql_update = "update thread_info set finishedSize=?  where thread_id=? and fileUrl=?";
-        db.execSQL(sql_update, new Object[]{finished, thread_id, url});
-        db.close();
+        //判断线程信息是否存在
+        if (isExist(url, thread_id)) {
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            String sql_update = "update thread_info set finishedSize=?  where thread_id=? and fileUrl=?";
+            db.execSQL(sql_update, new Object[]{finished, thread_id, url});
+            db.close();
+        }
     }
 
     @Override
