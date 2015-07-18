@@ -2,6 +2,7 @@ package com.httpionichina.androiddownloader.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.httpionichina.androiddownloader.db.dao.ThreadDAO;
 import com.httpionichina.androiddownloader.db.imple.ThreadDAOImple;
@@ -23,6 +24,8 @@ import java.util.List;
  * Created by Martin on 2015/7/17.
  */
 public class DownloadTask {
+
+    private final String TAG = "DownloadTask";
 
     public static final String FINISHED_SIZE = "FINISHED_SIZE";
 
@@ -117,6 +120,7 @@ public class DownloadTask {
                         //将每次写入文件的时候的进度累加到完成进度中
                         mFinishedSize += len;
                         if (System.currentTimeMillis() - time > 500) {
+                            Log.e(TAG, TAG + "完成进度。。。。" + mFinishedSize);
                             time = System.currentTimeMillis();
                             //将线程的下载进度传送到广播中,采用百分比的形式
                             finishedIntent.putExtra(FINISHED_SIZE, mFinishedSize * 100 / mFileInfo.getFileSize());
@@ -128,7 +132,7 @@ public class DownloadTask {
                             mThreadDAO.updateThread(
                                     mThreadInfo.getFileUrl(),
                                     mThreadInfo.getId(),
-                                    mThreadInfo.getFinishedSize());
+                                    mFinishedSize);
                             //跳出循环
                             return;
                         }
@@ -136,7 +140,6 @@ public class DownloadTask {
                     //下载完成
                     //删除线程信息
                     mThreadDAO.deleteThread(mThreadInfo.getFileUrl(), mThreadInfo.getId());
-
                 }
 
 
@@ -146,8 +149,8 @@ public class DownloadTask {
                 //释放资源
                 try {
                     connection.disconnect();
-                    accessFile.close();
                     input.close();
+                    accessFile.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -26,7 +26,7 @@ public class DownloadServices extends Service {
 
     public static final String ACTION_START = "ACTION_START";
     public static final String ACTION_STOP = "ACTION_STOP";
-    public static final String ACTION_UPDATE = "ACTION_UPDATE";
+    public static final String ACTION_UPDATE = "ACTION_UPDATE_FINISHED";
     public static final String FILE_INFO = "FILE_INFO";
 
     //标识初始化
@@ -42,21 +42,22 @@ public class DownloadServices extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (ACTION_START.equals(intent.getAction())) {
-            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra(FILE_INFO);
-            Log.i(TAG, "fileInfo..Start" + fileInfo.toString());
-            //启动初始化线程：
-            InitThread initThread = new InitThread(fileInfo);
-            initThread.start();
-        } else {
-            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra(FILE_INFO);
-            Log.i(TAG, "fileInfo..Stop" + fileInfo.toString());
-            //设置现在任务暂停
-            if (mDownloadTask != null) {
-                mDownloadTask.isPause = true;
+        if (intent != null) {
+            if (ACTION_START.equals(intent.getAction())) {
+                FileInfo fileInfo = (FileInfo) intent.getSerializableExtra(FILE_INFO);
+                Log.i(TAG, "fileInfo..Start" + fileInfo.toString());
+                //启动初始化线程：
+                InitThread initThread = new InitThread(fileInfo);
+                initThread.start();
+            } else {
+                FileInfo fileInfo = (FileInfo) intent.getSerializableExtra(FILE_INFO);
+                Log.i(TAG, "fileInfo..Stop" + fileInfo.toString());
+                //设置现在任务暂停
+                if (mDownloadTask != null) {
+                    mDownloadTask.isPause = true;
+                }
             }
         }
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -143,5 +144,11 @@ public class DownloadServices extends Service {
                 }
             }
         }
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

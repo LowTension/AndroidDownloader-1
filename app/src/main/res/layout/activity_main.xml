@@ -24,9 +24,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tv_download_file_name"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0" />
+        android:max="100" />
 
     <Button
         android:id="@+id/btn_stop"

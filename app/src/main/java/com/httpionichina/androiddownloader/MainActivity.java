@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -17,6 +18,7 @@ import com.httpionichina.androiddownloader.task.DownloadTask;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final String TAG = "MainActivity";
 
     private TextView mTVDownloadFileName;
 
@@ -42,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
         mPBDownloadProgress = (ProgressBar) findViewById(R.id.pb_download_progress);
         mBTNStop = (Button) findViewById(R.id.btn_stop);
         mBTNStart = (Button) findViewById(R.id.btn_start);
-        final String downloadUrl = "http://img.huxiu.com/portal/201408/26/22232930hzhnzywn9hy3k4.jpg";
+        final String downloadUrl = "http://dlsw.baidu.com/sw-search-sp/soft/45/38616/tsfazsjsjhf2015.7.3.117.1436515748.exe";
         final FileInfo fileInfo = new FileInfo(0, downloadUrl,
-                "22232930hzhnzywn9hy3k4.jpg", 0, 0);
+                "tsfazsjsjhf2015.7.3.117.1436515748.exe", 0, 0);
 
         mTVDownloadFileName.setText(fileInfo.getFileName());
 
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         //注册广播接受
         IntentFilter filter = new IntentFilter();
-        filter.addAction(DownloadServices.ACTION_START);
+        filter.addAction(DownloadServices.ACTION_UPDATE);
         registerReceiver(mReceiver, filter);
     }
 
@@ -87,8 +89,10 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             //判意图的动作
             if (DownloadServices.ACTION_UPDATE.equals(intent.getAction())) {
+                int finishedSize = intent.getIntExtra(DownloadTask.FINISHED_SIZE, 0);
+                Log.e(TAG, TAG + "完成进度。。。。" + finishedSize);
                 //设置接收到的下载进度
-                mPBDownloadProgress.setProgress(intent.getIntExtra(DownloadTask.FINISHED_SIZE, 0));
+                mPBDownloadProgress.setProgress(finishedSize);
             }
         }
     };
