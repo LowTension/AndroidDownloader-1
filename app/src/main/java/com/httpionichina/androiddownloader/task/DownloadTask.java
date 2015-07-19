@@ -123,7 +123,7 @@ public class DownloadTask {
                             Log.e(TAG, TAG + "完成进度。。。。" + mFinishedSize);
                             time = System.currentTimeMillis();
                             //将线程的下载进度传送到广播中,采用百分比的形式
-                            finishedIntent.putExtra(FINISHED_SIZE, mFinishedSize * 100 / mFileInfo.getFileSize());
+                            finishedIntent.putExtra(FINISHED_SIZE, (int) ((mFinishedSize / (double) mFileInfo.getFileSize())*100));
                             //发出广播
                             mContext.sendBroadcast(finishedIntent);
                         }
